@@ -1,0 +1,1156 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>DNETCOM Week 3 Mock Exam – Wired and Wireless LANs</title>
+<link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700;800&family=DM+Sans:wght@300;400;500;600&display=swap" rel="stylesheet">
+<style>
+:root {
+  --navy: #0f1b4c;
+  --navy2: #1a2d6d;
+  --gold: #f5c518;
+  --gold2: #e6b400;
+  --bg: #f0f2f8;
+  --card: #ffffff;
+  --text: #1a1a2e;
+  --text2: #4a4a6a;
+  --border: #d1d5e8;
+  --correct: #16a34a;
+  --wrong: #dc2626;
+  --correct-bg: #dcfce7;
+  --wrong-bg: #fee2e2;
+  --missed-bg: #d1fae5;
+  --opt-hover: #eef2ff;
+  --opt-sel: #dbeafe;
+  --opt-sel-border: #3b82f6;
+  --shadow: 0 2px 12px rgba(15,27,76,0.10);
+  --radius: 14px;
+}
+[data-theme="dark"] {
+  --bg: #0d1117;
+  --card: #161b22;
+  --text: #e6edf3;
+  --text2: #8b949e;
+  --border: #30363d;
+  --opt-hover: #1f2937;
+  --opt-sel: #1e3a5f;
+  --opt-sel-border: #60a5fa;
+  --correct-bg: #14532d;
+  --wrong-bg: #450a0a;
+  --missed-bg: #052e16;
+  --shadow: 0 2px 12px rgba(0,0,0,0.4);
+}
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:'DM Sans',sans-serif;background:var(--bg);color:var(--text);min-height:100vh;transition:background .3s,color .3s}
+h1,h2,h3,.syne{font-family:'Syne',sans-serif}
+
+/* CREDIT BAR */
+.credit-bar{background:var(--navy);color:#fff;padding:6px 20px;font-size:11.5px;display:flex;flex-wrap:wrap;gap:6px 20px;justify-content:center;align-items:center;font-family:'DM Sans',sans-serif}
+.credit-bar a{color:var(--gold);text-decoration:none}.credit-bar a:hover{text-decoration:underline}
+.cb-sep{opacity:.4}
+
+/* TIMER BAR */
+#timerBar{position:sticky;top:0;z-index:200;background:var(--navy);padding:10px 18px;display:flex;align-items:center;gap:12px;box-shadow:0 2px 10px rgba(0,0,0,.3)}
+#timerDisplay{font-family:'Syne',sans-serif;font-size:20px;font-weight:700;color:#fff;min-width:70px}
+#timerDisplay.warn{color:var(--gold)}
+#timerDisplay.danger{color:#ff4444;animation:pulse .8s infinite}
+@keyframes pulse{0%,100%{opacity:1}50%{opacity:.5}}
+#progressWrap{flex:1;background:rgba(255,255,255,.2);border-radius:20px;height:8px;overflow:hidden}
+#progressBar{height:100%;background:var(--gold);border-radius:20px;transition:width .5s,background .5s}
+#progressBar.warn{background:#f59e0b}
+#progressBar.danger{background:#ef4444}
+#answeredCount{color:#cdd;font-size:13px;white-space:nowrap}
+#streakBadge{display:none;background:var(--gold);color:var(--navy);border-radius:20px;padding:3px 10px;font-weight:700;font-size:13px;font-family:'Syne',sans-serif}
+#navBtn{background:rgba(255,255,255,.15);border:1px solid rgba(255,255,255,.3);color:#fff;border-radius:8px;padding:6px 13px;cursor:pointer;font-size:13px;font-family:'DM Sans',sans-serif;transition:background .2s}
+#navBtn:hover{background:rgba(255,255,255,.25)}
+#darkBtn{background:rgba(255,255,255,.1);border:1px solid rgba(255,255,255,.25);color:#fff;border-radius:8px;padding:6px 11px;cursor:pointer;font-size:16px;transition:background .2s}
+#darkBtn:hover{background:rgba(255,255,255,.2)}
+
+/* CONTAINER */
+.container{max-width:860px;margin:0 auto;padding:28px 16px 60px}
+
+/* GITHUB CARD */
+.gh-card{background:var(--card);border:2px solid var(--border);border-radius:var(--radius);padding:20px 24px;display:flex;gap:20px;align-items:center;cursor:pointer;transition:box-shadow .2s,transform .2s;margin-bottom:22px;box-shadow:var(--shadow)}
+.gh-card:hover{transform:translateY(-2px);box-shadow:0 6px 24px rgba(15,27,76,.18)}
+.gh-avatar{width:72px;height:72px;border-radius:50%;object-fit:cover;border:3px solid var(--gold);flex-shrink:0}
+.gh-info{flex:1}
+.gh-name{font-family:'Syne',sans-serif;font-size:18px;font-weight:700;color:var(--text)}
+.gh-badges{display:flex;flex-wrap:wrap;gap:5px;margin:5px 0}
+.badge{font-size:11px;border-radius:20px;padding:2px 9px;font-weight:600;font-family:'Syne',sans-serif}
+.badge-creator{background:var(--gold);color:var(--navy)}
+.badge-school{background:var(--navy);color:#fff}
+.badge-sec{background:#e0e7ff;color:#3730a3}
+[data-theme="dark"] .badge-sec{background:#1e3a5f;color:#93c5fd}
+.gh-meta{font-size:12.5px;color:var(--text2);display:flex;flex-wrap:wrap;gap:8px;margin-top:4px}
+.gh-meta span{display:flex;align-items:center;gap:3px}
+.gh-stats{display:flex;gap:14px;margin-top:8px;flex-wrap:wrap}
+.gh-stat{text-align:center}
+.gh-stat .num{font-family:'Syne',sans-serif;font-weight:700;font-size:15px;color:var(--navy)}
+[data-theme="dark"] .gh-stat .num{color:var(--gold)}
+.gh-stat .lbl{font-size:10.5px;color:var(--text2)}
+.gh-achievements{display:flex;gap:6px;margin-top:8px;align-items:center}
+.gh-achievements span{font-size:11px;color:var(--text2)}
+.ach-badge{font-size:10px;padding:2px 8px;border-radius:20px;font-weight:600}
+.ach-pull{background:#dbeafe;color:#1d4ed8}
+.ach-yolo{background:#fef3c7;color:#92400e}
+[data-theme="dark"] .ach-pull{background:#1e3a5f;color:#93c5fd}
+[data-theme="dark"] .ach-yolo{background:#451a03;color:#fbbf24}
+
+/* EXAM HEADER */
+.exam-header{text-align:center;margin-bottom:28px}
+.exam-title{font-size:26px;font-weight:800;color:var(--navy);line-height:1.2}
+[data-theme="dark"] .exam-title{color:var(--gold)}
+.exam-sub{font-size:14px;color:var(--text2);margin-top:5px}
+.exam-meta-pills{display:flex;flex-wrap:wrap;justify-content:center;gap:8px;margin-top:12px}
+.emp{background:var(--navy);color:#fff;border-radius:20px;padding:4px 13px;font-size:12px;font-family:'Syne',sans-serif;font-weight:600}
+[data-theme="dark"] .emp{background:var(--navy2)}
+
+/* SECTION LABEL */
+.section-label{font-family:'Syne',sans-serif;font-size:13px;font-weight:700;color:var(--gold2);text-transform:uppercase;letter-spacing:1.5px;padding:6px 0;border-bottom:2px solid var(--gold);margin-bottom:16px;margin-top:30px}
+
+/* QUESTION CARD */
+.qcard{background:var(--card);border-radius:var(--radius);padding:20px 22px;margin-bottom:16px;border:2px solid var(--border);box-shadow:var(--shadow);transition:border .2s,box-shadow .2s;position:relative}
+.qcard.flagged{border-color:#f97316;box-shadow:0 0 0 3px rgba(249,115,22,.2)}
+.qcard.answered{border-left:4px solid #3b82f6}
+.qcard.correct-card{border-color:var(--correct);background:var(--correct-bg)}
+.qcard.wrong-card{border-color:var(--wrong);background:var(--wrong-bg)}
+.qcard-top{display:flex;justify-content:space-between;align-items:flex-start;gap:10px;margin-bottom:12px}
+.qnum{font-family:'Syne',sans-serif;font-size:12px;font-weight:700;color:var(--text2)}
+.qtags{display:flex;gap:6px;align-items:center;flex-wrap:wrap}
+.tag{font-size:10.5px;border-radius:12px;padding:2px 8px;font-weight:600;font-family:'Syne',sans-serif}
+.tag-easy{background:#dcfce7;color:#15803d}
+.tag-medium{background:#fef9c3;color:#92400e}
+.tag-hard{background:#fee2e2;color:#b91c1c}
+.tag-slide{background:#e0e7ff;color:#3730a3;cursor:default}
+[data-theme="dark"] .tag-easy{background:#14532d;color:#86efac}
+[data-theme="dark"] .tag-medium{background:#451a03;color:#fde68a}
+[data-theme="dark"] .tag-hard{background:#450a0a;color:#fca5a5}
+[data-theme="dark"] .tag-slide{background:#1e3a5f;color:#93c5fd}
+.flag-btn{background:none;border:1px solid var(--border);border-radius:8px;padding:4px 8px;cursor:pointer;font-size:14px;transition:all .2s;color:var(--text2)}
+.flag-btn:hover{border-color:#f97316;background:#fff7ed}
+.flag-btn.active{background:#fff7ed;border-color:#f97316;color:#f97316}
+.qtext{font-size:15px;color:var(--text);line-height:1.5;margin-bottom:14px}
+
+/* MC OPTIONS */
+.options{display:flex;flex-direction:column;gap:8px}
+.opt-label{display:flex;align-items:center;gap:12px;padding:11px 14px;border:2px solid var(--border);border-radius:10px;cursor:pointer;transition:all .2s;user-select:none;position:relative}
+.opt-label:hover{background:var(--opt-hover);border-color:#93c5fd}
+.opt-label.selected{background:var(--opt-sel);border-color:var(--opt-sel-border)}
+.opt-label.correct-opt{background:var(--correct-bg);border-color:var(--correct)!important}
+.opt-label.wrong-opt{background:var(--wrong-bg);border-color:var(--wrong)!important}
+.opt-label.missed-opt{background:var(--missed-bg);border-color:var(--correct)!important}
+.radio-circle{width:18px;height:18px;border-radius:50%;border:2px solid var(--border);flex-shrink:0;display:flex;align-items:center;justify-content:center;transition:all .2s}
+.opt-label.selected .radio-circle{border-color:#3b82f6;background:#3b82f6}
+.opt-label.selected .radio-circle::after{content:'';width:6px;height:6px;background:#fff;border-radius:50%}
+.opt-label.correct-opt .radio-circle{border-color:var(--correct);background:var(--correct)}
+.opt-label.correct-opt .radio-circle::after{content:'';width:6px;height:6px;background:#fff;border-radius:50%}
+.opt-label.wrong-opt .radio-circle{border-color:var(--wrong);background:var(--wrong)}
+.opt-label.wrong-opt .radio-circle::after{content:'';width:6px;height:6px;background:#fff;border-radius:50%}
+.opt-label.missed-opt .radio-circle{border-color:var(--correct);background:#86efac}
+.opt-label.missed-opt .radio-circle::after{content:'';width:6px;height:6px;background:#fff;border-radius:50%}
+.opt-text{font-size:14px;color:var(--text);flex:1}
+.opt-letter{font-family:'Syne',sans-serif;font-weight:700;font-size:13px;color:var(--text2);min-width:16px}
+input[type=radio],input[type=checkbox]{display:none}
+
+/* TF */
+.tf-options{display:flex;gap:10px}
+.tf-btn{flex:1;padding:12px;border:2px solid var(--border);border-radius:10px;cursor:pointer;text-align:center;font-weight:600;font-family:'Syne',sans-serif;font-size:14px;transition:all .2s;background:var(--card);color:var(--text)}
+.tf-btn:hover{border-color:#93c5fd;background:var(--opt-hover)}
+.tf-btn.selected{background:var(--opt-sel);border-color:var(--opt-sel-border);color:#1d4ed8}
+[data-theme="dark"] .tf-btn.selected{color:#93c5fd}
+.tf-btn.correct-tf{background:var(--correct-bg);border-color:var(--correct);color:var(--correct)}
+.tf-btn.wrong-tf{background:var(--wrong-bg);border-color:var(--wrong);color:var(--wrong)}
+.tf-btn.missed-tf{background:var(--missed-bg);border-color:var(--correct);color:var(--correct)}
+
+/* TEXT INPUT */
+.text-answer{width:100%;padding:10px 14px;border:2px solid var(--border);border-radius:10px;font-size:14px;font-family:'DM Sans',sans-serif;background:var(--card);color:var(--text);transition:border .2s;resize:vertical}
+.text-answer:focus{outline:none;border-color:#3b82f6}
+.text-answer:disabled{background:var(--opt-hover);cursor:not-allowed}
+.enum-item{margin-bottom:8px}
+.enum-lbl{font-size:13px;color:var(--text2);margin-bottom:4px;font-weight:500}
+
+/* EXPLANATION */
+.explanation-box{display:none;margin-top:14px;padding:14px;border-radius:10px;border:1px solid var(--border);background:var(--opt-hover);font-size:13.5px;line-height:1.6}
+.explanation-box.show{display:block}
+.exp-correct{color:var(--correct);font-weight:700;margin-bottom:6px;font-size:13px}
+.exp-section{margin-top:8px}
+.exp-section-title{font-weight:700;font-size:12px;text-transform:uppercase;letter-spacing:.8px;color:var(--text2);margin-bottom:5px}
+.exp-item{margin-bottom:4px;font-size:13px;padding-left:10px;border-left:3px solid var(--border)}
+.exp-item.exp-right{border-color:var(--correct);color:var(--correct)}
+.exp-item.exp-wrong{border-color:var(--wrong);color:var(--wrong)}
+
+/* RESULT BANNER */
+#resultBanner{display:none;background:var(--navy);color:#fff;border-radius:var(--radius);padding:28px;text-align:center;margin-bottom:24px}
+#resultBanner.pass{background:linear-gradient(135deg,#064e3b,#065f46)}
+#resultBanner.fail{background:linear-gradient(135deg,#450a0a,#7f1d1d)}
+.result-score{font-family:'Syne',sans-serif;font-size:48px;font-weight:800;color:var(--gold)}
+.result-label{font-size:20px;margin-top:4px;font-family:'Syne',sans-serif}
+.result-pass{color:#4ade80;font-size:22px;font-weight:700;margin-top:10px;font-family:'Syne',sans-serif}
+.result-fail{color:#f87171;font-size:22px;font-weight:700;margin-top:10px;font-family:'Syne',sans-serif}
+.result-streak{margin-top:12px;font-size:15px;color:#fbbf24}
+.section-pills{display:flex;flex-wrap:wrap;justify-content:center;gap:8px;margin-top:16px}
+.sec-pill{border-radius:20px;padding:5px 14px;font-size:12px;font-weight:600;font-family:'Syne',sans-serif}
+.pill-mc{background:#3b82f6;color:#fff}
+.pill-tf{background:#8b5cf6;color:#fff}
+.pill-en{background:#f59e0b;color:#fff}
+.pill-id{background:#06b6d4;color:#fff}
+.pill-si{background:#10b981;color:#fff}
+
+/* CHART */
+#chartArea{display:none;background:var(--card);border-radius:var(--radius);padding:22px;margin-bottom:24px;border:1px solid var(--border)}
+.chart-title{font-family:'Syne',sans-serif;font-weight:700;font-size:15px;margin-bottom:14px;color:var(--text)}
+.chart-row{display:flex;align-items:center;gap:10px;margin-bottom:10px}
+.chart-lbl{font-size:12px;min-width:120px;color:var(--text2);font-weight:600}
+.chart-bar-wrap{flex:1;background:var(--border);border-radius:20px;height:18px;overflow:hidden}
+.chart-bar{height:100%;border-radius:20px;transition:width 1.2s cubic-bezier(.4,0,.2,1)}
+.chart-pct{font-size:12px;font-weight:700;min-width:38px;text-align:right;color:var(--text)}
+
+/* SUBMIT BTN */
+#submitArea{text-align:center;margin-top:28px}
+.submit-btn{background:var(--gold);color:var(--navy);font-family:'Syne',sans-serif;font-weight:800;font-size:16px;padding:14px 44px;border:none;border-radius:12px;cursor:pointer;transition:all .2s;letter-spacing:.5px}
+.submit-btn:hover{background:var(--gold2);transform:translateY(-2px);box-shadow:0 4px 16px rgba(245,197,24,.4)}
+.retake-btn{background:var(--navy);color:#fff;font-family:'Syne',sans-serif;font-weight:700;font-size:15px;padding:12px 36px;border:none;border-radius:12px;cursor:pointer;transition:all .2s;margin-top:16px}
+.retake-btn:hover{background:var(--navy2);transform:translateY(-1px)}
+
+/* NAVIGATOR */
+#navOverlay{display:none;position:fixed;inset:0;background:rgba(0,0,0,.5);z-index:300}
+#navPanel{position:fixed;right:0;top:0;bottom:0;width:280px;background:var(--card);border-left:1px solid var(--border);z-index:301;padding:20px;overflow-y:auto;transform:translateX(100%);transition:transform .3s}
+#navPanel.open{transform:translateX(0)}
+.nav-title{font-family:'Syne',sans-serif;font-weight:700;font-size:16px;margin-bottom:14px;color:var(--text)}
+.nav-section{margin-bottom:14px}
+.nav-sec-lbl{font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:1px;color:var(--text2);margin-bottom:6px}
+.nav-grid{display:flex;flex-wrap:wrap;gap:6px}
+.nav-box{width:34px;height:34px;border-radius:7px;border:2px solid var(--border);cursor:pointer;font-size:12px;font-weight:700;font-family:'Syne',sans-serif;display:flex;align-items:center;justify-content:center;transition:all .2s;background:var(--card);color:var(--text)}
+.nav-box:hover{border-color:var(--gold);background:var(--opt-hover)}
+.nav-box.nav-answered{background:#dbeafe;border-color:#3b82f6;color:#1d4ed8}
+.nav-box.nav-flagged{background:#fff7ed;border-color:#f97316;color:#f97316}
+.nav-box.nav-correct{background:#dcfce7;border-color:#16a34a;color:#15803d}
+.nav-box.nav-wrong{background:#fee2e2;border-color:#dc2626;color:#dc2626}
+.nav-box.nav-skipped{background:#fde8e8;border-color:#f87171;color:#991b1b;opacity:.6}
+[data-theme="dark"] .nav-box.nav-answered{background:#1e3a5f;border-color:#60a5fa;color:#93c5fd}
+[data-theme="dark"] .nav-box.nav-correct{background:#14532d;border-color:#16a34a;color:#4ade80}
+[data-theme="dark"] .nav-box.nav-wrong{background:#450a0a;border-color:#dc2626;color:#fca5a5}
+#navCloseBtn{position:absolute;top:14px;right:14px;background:none;border:none;font-size:20px;cursor:pointer;color:var(--text2)}
+
+/* MODAL */
+#modalOverlay{display:none;position:fixed;inset:0;background:rgba(0,0,0,.6);z-index:500;align-items:center;justify-content:center}
+#modalOverlay.show{display:flex}
+#modal{background:var(--card);border-radius:var(--radius);padding:30px;max-width:400px;width:90%;text-align:center;border:1px solid var(--border)}
+.modal-title{font-family:'Syne',sans-serif;font-weight:800;font-size:20px;margin-bottom:10px;color:var(--text)}
+.modal-body{font-size:14px;color:var(--text2);margin-bottom:22px;line-height:1.5}
+.modal-btns{display:flex;gap:10px;justify-content:center}
+.modal-yes{background:var(--gold);color:var(--navy);border:none;border-radius:9px;padding:10px 24px;font-weight:700;font-family:'Syne',sans-serif;cursor:pointer;font-size:14px}
+.modal-no{background:var(--border);color:var(--text);border:none;border-radius:9px;padding:10px 24px;font-weight:700;font-family:'Syne',sans-serif;cursor:pointer;font-size:14px}
+.modal-yes:hover{background:var(--gold2)}
+.modal-no:hover{background:var(--text2);color:#fff}
+
+@media(max-width:600px){
+  .gh-card{flex-direction:column;align-items:flex-start}
+  .exam-title{font-size:21px}
+  #timerDisplay{font-size:16px}
+  .result-score{font-size:36px}
+}
+</style>
+</head>
+<body>
+
+<!-- CREDIT BAR TOP -->
+<div class="credit-bar">
+  <span>Kim Cedrick C. Villar</span><span class="cb-sep">|</span>
+  <span>BSIT – IT252</span><span class="cb-sep">|</span>
+  <span>DNETCOM – Network Security, Storage and Data Communication</span><span class="cb-sep">|</span>
+  <span>National University – Fairview</span><span class="cb-sep">|</span>
+  <span>March 22, 2026</span><span class="cb-sep">|</span>
+  <a href="https://github.com/Ceddrickx" target="_blank">github.com/Ceddrickx</a>
+</div>
+
+<!-- TIMER BAR -->
+<div id="timerBar">
+  <div id="timerDisplay">20:00</div>
+  <div id="progressWrap"><div id="progressBar" style="width:100%"></div></div>
+  <div id="answeredCount">0 / 53 answered</div>
+  <div id="streakBadge">🔥 0</div>
+  <button id="navBtn" onclick="toggleNav()">☰ Navigator</button>
+  <button id="darkBtn" onclick="toggleDark()" title="Toggle dark mode">🌙</button>
+</div>
+
+<!-- NAVIGATOR PANEL -->
+<div id="navOverlay" onclick="closeNav()"></div>
+<div id="navPanel">
+  <button id="navCloseBtn" onclick="closeNav()">✕</button>
+  <div class="nav-title">Question Navigator</div>
+  <div id="navSections"></div>
+</div>
+
+<!-- SUBMIT MODAL -->
+<div id="modalOverlay">
+  <div id="modal">
+    <div class="modal-title" id="modalTitle">📋 Submit Exam</div>
+    <div class="modal-body" id="modalBody">Are you sure you want to submit your exam?</div>
+    <div class="modal-btns">
+      <button class="modal-yes" onclick="doSubmit()">✓ Yes, Submit</button>
+      <button class="modal-no" onclick="closeModal()">✗ Cancel</button>
+    </div>
+  </div>
+</div>
+
+<div class="container">
+
+<!-- GITHUB CARD -->
+<div class="gh-card" onclick="window.open('https://github.com/Ceddrickx','_blank')">
+  <img class="gh-avatar" src="data:image/jpeg;base64,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BBAEEEEAQQQQBBBBAEEEEAQQQQBBBBAEEEEAQQQQBBBBAEEEEAQQQQBBBBAEEEEAQQQQBBBBAEEEEAQQQQBBBBAEEEEAQQQQBBBBAEEEEAQQQQBBBBAEEEEAQQQQBBBBAEEEEAQQQQBBBBAEEEEAQQQQBBBBAEEEEAQQQQBBBBAEEEEAQQQQBBBBAEEEEAQQQQBBBBAEEEEAQQQQBBBBAEEEEAQQQQBBBBAEEEEAQQQQBBBBAEEEEAQQQQBBBBAEEEEAQQQQBBBBAEEEEAQQQQBBBBAEEEEAQQQQBBBBAEEEEAQQQQBBBBAEEEEAQQQQBBBBAEEEEAQQQQBBBBAEEEEAQQQQBBBBAEEEEAQQQQBBBBAEEEEAQQQQBBBBAEEEEAQQQQBBBBAEEEEAQQQQBBBBAEEEEAQQQQBBBBAEEEEAQQQQBBBBAEEEEAQQQQBBBBAEEEEAQQQQBBBBAEEEEAQQQQBBBBAEEEEAQQQQBBBBAEEEEAQQQQBBBBAEEEEAQQQQBBBBAEEEEAQQQQBBBBAEEEEAQQQQBBBBAEEEEAQQQQBBBBAEEEEAQQQQBBBBAEEEEAQQQQBBBBAEEEEAQQQQBBBBAEEEEAQQQQBBBBAEEEEAQQQQBBBBAEEEEAQQQQBBBBAEEEEAQQQQBBBBAEEEEAQQQQBBBBAEEEEAQQQQBBBBAEEEEAQQQQBBBBAEEEEAQQQQBBBBAEEEEAQQQQBBBBAEEEEAQQQQBBBBAEEEEAQQQQBBBBAEEEEAQQQQBBBBAEEEEAQQQQBBBBAEEEEAQQQQBBBBAEEEEAQQQQBBBBAEEEEAQQQQBBBBAEEEEAQQQQBBBBAEEEEAQQQQBBBBAEEEEAQQQQBBBBAEEEEAQQQQBBBBAEEEEAQQQQBBBBAEEEEAQQQQBBBBAEEEEAQQQQBBBBAEEEEAQQQQBBBBAEEEEAQQQQBBBBAEEEEAQQQQBBBBAEEEEAQQQQBBBBAEEEEAQQQQBBBBAEEEEAQQQQBBBBAEEEEAQQQQBBBBAEEEEAQQQQBBBBAEEEEAQQQQBBBBAEEEEAQQQQBBBBAEEEEAQQQQBBBBAEEEEAQQQQBBBBAEEEEAQQQQBBBBAEEEEAQQQQBBBBAEEEEAQQQQBBBBAEEEEAQQQQBBBBAEEEEAQQQQBBBBAEEEEAQQQQBBBBAEEEEAQQQQBBBBAEEEEAQQQQBBBBAEEEEAQQQQBBBBAEEEEAQQQQBBBBAEEEEAQQQQBBBBAEEEEAQQQQBBBBAEEEEAQQQQBBBBAEEEEAQQQQBBBBAEEEEAQQQQBBBBAEEEEAQQQQBBBBAEEEEAQQQQBBBBAEEEEAQQQQBBBBAEEEEAQQQQBBBBAEEEEAQQQQBBBBAEEEEAQQQQBBBBAH//2Q==" alt="Ceddrickx">
+  <div class="gh-info">
+    <div class="gh-name">Ceddrickx</div>
+    <div class="gh-badges">
+      <span class="badge badge-creator">Creator</span>
+      <span class="badge badge-school">🏫 National University – Fairview</span>
+      <span class="badge badge-sec">IT-252 | BSIT</span>
+    </div>
+    <div class="gh-meta">
+      <span>📍 Philippines</span>
+      <span>📸 @cdrck_vllr</span>
+      <span>🎯 Focusing</span>
+    </div>
+    <div class="gh-stats">
+      <div class="gh-stat"><div class="num">9</div><div class="lbl">Repos</div></div>
+      <div class="gh-stat"><div class="num">4</div><div class="lbl">Followers</div></div>
+      <div class="gh-stat"><div class="num">5</div><div class="lbl">Following</div></div>
+    </div>
+    <div class="gh-achievements">
+      <span>Achievements:</span>
+      <span class="ach-badge ach-pull">🦈 Pull Shark</span>
+      <span class="ach-badge ach-yolo">⚡ YOLO</span>
+    </div>
+  </div>
+</div>
+
+<!-- RESULT BANNER (hidden until submit) -->
+<div id="resultBanner">
+  <div class="result-score" id="resultScore">0/53</div>
+  <div class="result-label" id="resultLabel">0%</div>
+  <div id="resultPass"></div>
+  <div class="result-streak" id="resultStreak"></div>
+  <div class="section-pills" id="sectionPills"></div>
+</div>
+
+<!-- CHART (hidden until submit) -->
+<div id="chartArea">
+  <div class="chart-title">📊 Performance by Section</div>
+  <div id="chartBars"></div>
+</div>
+
+<!-- EXAM HEADER -->
+<div class="exam-header">
+  <h1 class="exam-title">DNETCOM Week 3: Wired and Wireless LANs</h1>
+  <p class="exam-sub">Network Security, Storage and Data Communication &nbsp;|&nbsp; Mock Exam</p>
+  <div class="exam-meta-pills">
+    <span class="emp">⏱ 20 minutes</span>
+    <span class="emp">📝 53 items</span>
+    <span class="emp">✅ Passing: 75%</span>
+    <span class="emp">🔀 Randomized</span>
+  </div>
+</div>
+
+<div id="examBody"></div>
+
+<div id="submitArea">
+  <button class="submit-btn" id="submitBtn" onclick="openModal()">📤 Submit Exam</button>
+  <br>
+  <button class="retake-btn" id="retakeBtn" style="display:none" onclick="retake()">🔁 Retake Exam</button>
+</div>
+
+</div><!-- end container -->
+
+<!-- CREDIT BAR FOOTER -->
+<div class="credit-bar" style="margin-top:0">
+  <span>Kim Cedrick C. Villar</span><span class="cb-sep">|</span>
+  <span>BSIT – IT252</span><span class="cb-sep">|</span>
+  <span>DNETCOM – Network Security, Storage and Data Communication</span><span class="cb-sep">|</span>
+  <span>National University – Fairview</span><span class="cb-sep">|</span>
+  <span>March 22, 2026</span><span class="cb-sep">|</span>
+  <a href="https://github.com/Ceddrickx" target="_blank">github.com/Ceddrickx</a>
+</div>
+
+<script>
+// ══════════════════════════════════════════════
+//  QUESTION BANK
+// ══════════════════════════════════════════════
+const QUESTION_BANK = {
+  mc: [
+    {id:'mc1', slide:'Slide 3', diff:'Easy', q:'What does LAN Architecture primarily define?',
+     opts:['The geographic coverage of a network','The design and structure of networks within a limited area, defining how devices are interconnected','The protocols used for internet connectivity','The speed of data transmission between servers'],
+     ans:1,
+     why:['Incorrect. Geographic coverage refers to network classification (LAN, WAN, MAN), not LAN architecture itself.','Correct. LAN Architecture is specifically defined as the design and structure of networks within a limited area, dictating how devices interconnect.','Incorrect. Internet connectivity protocols (TCP/IP, HTTP) are separate from LAN architectural design.','Incorrect. Data transmission speed is an Ethernet standard concern, not the definition of LAN architecture.']},
+    {id:'mc2', slide:'Slide 4', diff:'Easy', q:'Network Topology refers to which of the following?',
+     opts:['The software used to manage a network','The physical and logical arrangement of nodes and connections governing how data flows between devices','The security protocols used in a LAN','The bandwidth allocated to each device'],
+     ans:1,
+     why:['Incorrect. Network management software (NMS) is a tool, not the definition of topology.','Correct. Network Topology defines both the physical layout and logical arrangement of nodes and data flow paths.','Incorrect. Security protocols (WPA2, 802.1X) are part of network security, not topology.','Incorrect. Bandwidth allocation is a QoS concept, unrelated to the definition of topology.']},
+    {id:'mc3', slide:'Slide 5', diff:'Easy', q:'Physical Topology specifically refers to:',
+     opts:['How data logically flows through the network','The software configuration of network devices','The layout of cabling, location of nodes, and interconnections between nodes and cabling','The encryption method used for data transmission'],
+     ans:2,
+     why:['Incorrect. That describes Logical Topology, not Physical Topology.','Incorrect. Software configuration is a network administration concern, not topology.','Correct. Physical Topology specifically refers to the actual layout of cables, node positions, and how they are physically interconnected.','Incorrect. Encryption methods (AES, WPA2) are security concepts unrelated to physical topology.']},
+    {id:'mc4', slide:'Slide 7', diff:'Medium', q:'In Bus Topology, what happens when data is transmitted?',
+     opts:['Data is sent only to the intended recipient directly','Data is sent to all connected nodes, but only the intended node accepts it by matching its machine code','Data travels in one direction only','Data is encrypted and sent through a central hub'],
+     ans:1,
+     why:['Incorrect. Direct delivery to a single recipient describes switching behavior, not bus topology.','Correct. In Bus Topology, signals travel to all nodes on the backbone, but only the node whose machine code matches accepts and processes the data.','Incorrect. In Bus Topology, signals travel in both directions alternately, not just one direction.','Incorrect. Bus Topology has no central hub; all nodes share the same cable backbone.']},
+    {id:'mc5', slide:'Slide 8', diff:'Easy', q:'In Star Topology, what role does the central node (hub/switch) play?',
+     opts:['It only receives data and never transmits it','It acts as a signal repeater','It encrypts all data before forwarding to the destination','It exclusively connects to external networks'],
+     ans:1,
+     why:['Incorrect. The central node both receives and retransmits data to the appropriate port.','Correct. In Star Topology, the central node (hub/switch) acts as a signal repeater, regenerating and forwarding signals to connected devices.','Incorrect. Encryption is a security function, not the core role of the central hub in Star Topology.','Incorrect. External network connection is the role of a router or modem, not the central switch in Star Topology.']},
+    {id:'mc6', slide:'Slide 9', diff:'Medium', q:'Ring Topology is best described as:',
+     opts:['A star topology with redundant paths','A mesh topology in a closed loop','A bus topology in a closed loop','A tree topology with circular connections'],
+     ans:2,
+     why:['Incorrect. Redundant paths describe mesh or dual-ring topologies, not Ring Topology specifically.','Incorrect. Mesh involves point-to-point connections between ALL nodes — Ring does not.','Correct. The slide explicitly defines Ring Topology as a bus topology arranged in a closed loop, where data passes through each node sequentially.','Incorrect. Tree Topology is hierarchical; circular connections are not a characteristic of tree topology.']},
+    {id:'mc7', slide:'Slide 10', diff:'Easy', q:'Tree Topology is primarily used in which type of network?',
+     opts:['Personal Area Networks (PANs)','Local Area Networks (LANs) only','Wide Area Networks (WANs)','Storage Area Networks (SANs)'],
+     ans:2,
+     why:['Incorrect. PANs are very small-range networks (Bluetooth), not associated with Tree Topology.','Incorrect. Tree Topology extends beyond LAN use; it is specifically mentioned for WANs.','Correct. The slide states that Tree Topology is used in Wide Area Networks (WANs) due to its hierarchical structure.','Incorrect. SANs are specialized networks for storage devices and are not defined by Tree Topology.']},
+    {id:'mc8', slide:'Slide 11', diff:'Hard', q:'A mesh network has 6 devices. Using the formula n(n-1)/2, how many physical channels are required for a full mesh?',
+     opts:['12','15','18','30'],
+     ans:1,
+     why:['Incorrect. 12 would result from 6×2, which is not the correct formula.','Correct. Using n(n-1)/2: 6×(6-1)/2 = 6×5/2 = 15 physical channels. Each device needs a direct link to every other device.','Incorrect. 18 would be 6×3, not the mesh formula result.','Incorrect. 30 would be 6×5, without the division by 2 — the formula divides by 2 to avoid counting each link twice.']},
+    {id:'mc9', slide:'Slide 12', diff:'Easy', q:'Hybrid Topology is defined as:',
+     opts:['A topology exclusive to wireless networks','A mixture of two or more different topologies','A topology that only combines bus and ring','A topology used exclusively in small office networks'],
+     ans:1,
+     why:['Incorrect. Hybrid Topology is a structural concept applicable to both wired and wireless networks.','Correct. Hybrid Topology combines two or more topology types — such as bus+ring, star+mesh, etc. — to meet different network requirements.','Incorrect. While bus+ring is one example, Hybrid Topology can combine any topologies (star+mesh, tree+bus, etc.).','Incorrect. Hybrid Topology is actually more common in larger, complex networks like campuses or enterprises.']},
+    {id:'mc10', slide:'Slide 13', diff:'Easy', q:'A computer that functions as both a client and a server simultaneously is called a:',
+     opts:['Host','Node','Peer','Gateway'],
+     ans:2,
+     why:['Incorrect. A Host is any IP-addressed device capable of sending/receiving data — it does not specifically imply dual client-server function.','Incorrect. A Node is any device connected to a network (computer, printer, router), not specifically a dual-role device.','Correct. A Peer is defined as a computer that functions as both a client AND a server, typical of peer-to-peer (P2P) networks.','Incorrect. A Gateway is a network device that routes traffic between different networks — not a dual client-server role.']},
+    {id:'mc11', slide:'Slide 14', diff:'Medium', q:'In Ethernet naming (e.g., "100Base-T"), what does "Base" signify?',
+     opts:['The base speed of 100 Mbps','Baseband signaling technology — the full channel carries one signal at a time','The base layer (Layer 1) of the OSI model','The basic/entry-level version of Ethernet'],
+     ans:1,
+     why:['Incorrect. The speed is indicated by the number prefix (100), not by "Base."','Correct. "Base" stands for Baseband, meaning the medium uses its full bandwidth to carry a single channel/signal at a time, as opposed to broadband which multiplexes multiple signals.','Incorrect. While Ethernet operates at Layer 1-2, "Base" in the naming convention does not reference OSI layers.','Incorrect. "Base" is not a product tier indicator — it is a technical description of the signaling method.']},
+    {id:'mc12', slide:'Slide 15', diff:'Easy', q:'Which Ethernet standard is commonly known as "Fast Ethernet"?',
+     opts:['10Base-T (IEEE 802.3)','100Base-TX (IEEE 802.3u)','1000Base-T (IEEE 802.3ab)','10GBase-T (802.3.an)'],
+     ans:1,
+     why:['Incorrect. 10Base-T is Standard Ethernet running at 10 Mbps, not Fast Ethernet.','Correct. 100Base-TX (IEEE 802.3u) is officially known as Fast Ethernet, running at 100 Mbps over Cat5/5E/6 UTP cabling.','Incorrect. 1000Base-T is Gigabit Ethernet (1000 Mbps), a step above Fast Ethernet.','Incorrect. 10GBase-T is 10 Gigabit Ethernet, far exceeding Fast Ethernet speeds.']},
+    {id:'mc13', slide:'Slide 15', diff:'Medium', q:'What type of cabling does 100Base-FX use?',
+     opts:['Category 5 UTP copper','Shielded twisted-pair (STP)','Multi-mode optical fiber','Coaxial cable'],
+     ans:2,
+     why:['Incorrect. Category 5 UTP is used by 100Base-TX, not the FX variant.','Incorrect. STP is used in some Gigabit Ethernet variants (1000Base-CX uses 150-ohm STP), not 100Base-FX.','Correct. 100Base-FX uses multi-mode optical fiber and can reach distances up to 412 meters, much farther than copper alternatives.','Incorrect. Coaxial cable was used in older 10Base-2 and 10Base-5 Ethernet, not 100Base-FX.']},
+    {id:'mc14', slide:'Slide 16', diff:'Easy', q:'1000Base-T (IEEE 802.3ab) is also known as:',
+     opts:['Fast Ethernet','Gigabit Ethernet','10 Gigabit Ethernet','Standard Ethernet'],
+     ans:1,
+     why:['Incorrect. Fast Ethernet is 100Base-TX (IEEE 802.3u) running at 100 Mbps.','Correct. 1000Base-T (IEEE 802.3ab) is Gigabit Ethernet, running at 1000 Mbps (1 Gbps) over Category 5 UTP, up to 100 meters.','Incorrect. 10 Gigabit Ethernet refers to 10GBase-T (IEEE 802.3an), running at 10 Gbps.','Incorrect. Standard Ethernet refers to 10Base-T running at 10 Mbps.']},
+    {id:'mc15', slide:'Slide 17', diff:'Easy', q:'In the context of LAN security, Unauthorized Access occurs when:',
+     opts:['A server crashes due to hardware failure','Individuals gain access to networks, systems, applications, data, or devices without permission','A firewall accidentally blocks legitimate traffic','The network bandwidth is fully consumed by high traffic'],
+     ans:1,
+     why:['Incorrect. A server hardware failure is a reliability/availability issue, not an unauthorized access security incident.','Correct. Unauthorized Access is specifically defined as individuals gaining access to an organization\'s networks, systems, applications, data, or devices WITHOUT permission.','Incorrect. A misconfigured firewall is a configuration issue, not an unauthorized access event in itself.','Incorrect. Bandwidth saturation is a performance/capacity issue, not a security breach.']},
+    {id:'mc16', slide:'Slide 18', diff:'Easy', q:'Malware and Viruses in the context of LAN security are best described as:',
+     opts:['Hardware defects that physically damage network components','Any program or code created with the intent to harm a computer, network, or server','Configuration errors in routers and switches','Unauthorized physical access to server rooms'],
+     ans:1,
+     why:['Incorrect. Hardware defects are physical failures, not malware.','Correct. Malware encompasses any malicious program or code designed to harm a computer, network, or server — including viruses, worms, ransomware, spyware, and Trojans.','Incorrect. Configuration errors (misconfigured ACLs, wrong VLANs) are administration problems, not malware.','Incorrect. Unauthorized physical access is a physical security concern, distinct from malware/virus threats.']},
+    {id:'mc17', slide:'Slide 19', diff:'Medium', q:'Why are Insider Threats considered particularly complex and dangerous?',
+     opts:['They can only affect external network connections','They are simple to detect using standard antivirus software','They present complex and dynamic risks affecting both public and private domains of all critical infrastructure sectors','They only occur in very large multinational organizations'],
+     ans:2,
+     why:['Incorrect. Insider threats primarily operate within the internal network, not just external connections.','Incorrect. Standard antivirus tools are designed for malware, not for detecting the intentional or accidental misuse of legitimate access credentials.','Correct. The slide specifically states that Insider Threats present a complex and dynamic risk affecting the public and private domains of ALL critical infrastructure sectors.','Incorrect. Insider threats can occur in organizations of any size, from small businesses to large enterprises.']},
+    {id:'mc18', slide:'Slide 20', diff:'Easy', q:'Poor Security Hygiene in a network environment can lead to:',
+     opts:['Improved network performance due to fewer security checks','Security incidents, data compromise, and data loss','Increased bandwidth availability for users','Better encryption of all transmitted network traffic'],
+     ans:1,
+     why:['Incorrect. Fewer security checks actually increase risk, not performance; they may slightly reduce overhead but at severe security cost.','Correct. Poor Security Hygiene (weak passwords, unpatched systems, misconfigured devices) directly leads to security incidents, data compromise, and data loss.','Incorrect. Security hygiene has no positive effect on bandwidth; poor hygiene may actually reduce bandwidth through malware-related traffic.','Incorrect. Poor security hygiene often means encryption is NOT properly implemented, resulting in weaker data protection.']},
+    {id:'mc19', slide:'Slide 21', diff:'Medium', q:'According to the lesson, Lack of Network Monitoring primarily becomes a challenge when:',
+     opts:['Too many security monitoring tools are installed simultaneously','The network has fewer than 10 connected devices','Non-uniformity in networks and alternating demand make scalability increasingly difficult','The firewall rules are too strict for normal operations'],
+     ans:2,
+     why:['Incorrect. Having multiple monitoring tools is generally beneficial; the challenge is when monitoring is absent or insufficient.','Incorrect. Small networks with few devices are actually easier to monitor; the challenge arises in large, non-uniform networks.','Correct. The slide states that monitoring becomes a challenge specifically where lack of uniformity in networks and alternated demand makes scalability even worse.','Incorrect. Overly strict firewall rules are a configuration issue, not the primary challenge of network monitoring.']},
+    {id:'mc20', slide:'Slide 8', diff:'Medium', q:'Which of the following is NOT a characteristic of Star Topology?',
+     opts:['Each node connects to a central hub, router, or switch','The central node acts as a signal repeater','Data passes sequentially through each node in a circular path until it reaches its destination','Nodes are indirectly connected to each other through the central node'],
+     ans:2,
+     why:['Incorrect — this IS a characteristic of Star Topology. Each device connects individually to the central hub/switch.','Incorrect — this IS a characteristic. The central node amplifies and retransmits signals.','Correct — this is NOT a feature of Star Topology. Sequential circular data passing describes Ring Topology, not Star.','Incorrect — this IS a characteristic. In Star Topology, all inter-node communication passes through the central hub/switch.']},
+  ],
+  tf: [
+    {id:'tf1', slide:'Slide 5', diff:'Easy', q:'Physical Topology only refers to the software configuration of a network, and has nothing to do with physical cabling or node placement.',
+     ans:false,
+     why:'FALSE. Physical Topology specifically refers to the actual layout of cabling, the physical locations of nodes, and the interconnections between nodes and cabling — it is a hardware/physical concept, not software.'},
+    {id:'tf2', slide:'Slide 7', diff:'Medium', q:'In Bus Topology, signals travel in only one direction along the backbone cable.',
+     ans:false,
+     why:'FALSE. In Bus Topology, signals travel in BOTH directions alternately along the central cable. The data is broadcast to all nodes on the bus, and only the intended recipient (matched by machine code) accepts it.'},
+    {id:'tf3', slide:'Slide 8', diff:'Easy', q:'In Star Topology, each node is directly connected to every other node in the network.',
+     ans:false,
+     why:'FALSE. In Star Topology, each node connects only to the CENTRAL hub/switch, not directly to other nodes. Communication between nodes must pass through the central device, making connections indirect.'},
+    {id:'tf4', slide:'Slide 9', diff:'Easy', q:'In Ring Topology, each intermediate node retransmits the data signal to maintain its strength as it travels around the ring.',
+     ans:true,
+     why:'TRUE. This is a key feature of Ring Topology. Each intermediate node amplifies and retransmits the signal to ensure it remains strong enough to reach its destination — unlike Bus Topology where the signal can degrade.'},
+    {id:'tf5', slide:'Slide 10', diff:'Easy', q:'Tree Topology forms a hierarchical structure with a root node at the top, from which all other nodes branch out.',
+     ans:true,
+     why:'TRUE. Tree Topology is explicitly described as having a root node at the top of the hierarchy, with all other nodes connected to it (either directly or through intermediate nodes), creating a tree-like branching structure.'},
+    {id:'tf6', slide:'Slide 11', diff:'Medium', q:'A fully connected Mesh Topology with 5 devices requires exactly 10 physical communication channels.',
+     ans:true,
+     why:'TRUE. Using the formula n(n-1)/2: 5×(5-1)/2 = 5×4/2 = 10 physical channels. Each of the 5 devices needs a direct link to each of the other 4 devices, and dividing by 2 avoids counting each link twice.'},
+    {id:'tf7', slide:'Slide 13', diff:'Medium', q:'A Server in a network can only provide file-sharing services to connected clients.',
+     ans:false,
+     why:'FALSE. The slide explicitly states that "Server" is a generic term for any computer that provides services of WHATEVER TYPE, including file, print, web, login, and authentication services — not just file sharing.'},
+    {id:'tf8', slide:'Slide 14', diff:'Easy', q:'The letter "T" in Ethernet standard names like "100Base-T" indicates the use of fiber-optic cabling.',
+     ans:false,
+     why:'FALSE. The letter "T" in Ethernet naming indicates Twisted-pair copper cabling (e.g., Cat5 UTP). Fiber-optic variants use designators such as "F" (100Base-FX), "SX" (short-wavelength), or "LX" (long-wavelength).'},
+    {id:'tf9', slide:'Slide 15', diff:'Easy', q:'The Ethernet standard 100Base-TX (IEEE 802.3u) is capable of transmitting data at 1000 Mbps.',
+     ans:false,
+     why:'FALSE. 100Base-TX transmits at 100 Mbps, which is why it is called "Fast Ethernet." The 1000 Mbps (1 Gbps) speed is achieved by Gigabit Ethernet standards such as 1000Base-T (IEEE 802.3ab).'},
+    {id:'tf10', slide:'Slide 16', diff:'Medium', q:'The 10GBase-T (802.3.an) standard can achieve 10 Gbps data connections over Category 5e, 6, and 7 UTP cables.',
+     ans:true,
+     why:'TRUE. The slide specifically states that 10GBase-T (802.3.an) provides 10 Gbps connections over category 5e, 6, and 7 UTP cables. This makes it the highest-speed copper Ethernet standard listed in the lesson.'},
+  ],
+  en: [
+    {id:'en1', slide:'Slides 6–12', diff:'Medium', q:'Enumerate any FIVE (5) types of Physical Network Topology discussed in the lesson.',
+     ans:['Point-to-Point','Bus','Star','Ring','Tree','Mesh','Hybrid'],
+     minCount:5,
+     exp:'The lesson covers seven physical topology types: Point-to-Point (simplest, 2-node direct link), Bus (single backbone cable), Star (central hub/switch), Ring (closed loop), Tree (hierarchical, used in WANs), Mesh (every node connected to every other), and Hybrid (combination of two or more).'},
+    {id:'en2', slide:'Slides 17–21', diff:'Easy', q:'Enumerate ALL FIVE (5) Common Security Risks for LANs discussed in the lesson.',
+     ans:['Unauthorized Access','Malware and Viruses','Insider Threats','Poor Security Hygiene','Lack of Network Monitoring'],
+     minCount:5,
+     exp:'The lesson presents exactly five LAN security risks: (1) Unauthorized Access — gaining entry without permission; (2) Malware and Viruses — harmful programs/code; (3) Insider Threats — risks from within the organization; (4) Poor Security Hygiene — negligent practices leading to data compromise; (5) Lack of Network Monitoring — insufficient visibility into network activity.'},
+    {id:'en3', slide:'Slide 13', diff:'Easy', q:'Enumerate the THREE (3) roles a computer can play in a network as discussed in the lesson.',
+     ans:['Server','Client','Peer'],
+     minCount:3,
+     exp:'Three computer roles are defined: (1) Server — provides shared resources (file, print, web, authentication services); (2) Client — accesses and uses resources provided by a server (e.g., browser requesting a webpage); (3) Peer — functions as both client AND server simultaneously, as in peer-to-peer (P2P) networks.'},
+  ],
+  id: [
+    {id:'id1', slide:'Slide 3', diff:'Easy', q:'This term refers to the design and structure of networks within a limited area, defining how devices are interconnected.',
+     ans:'LAN Architecture',
+     exp:'LAN Architecture is defined as the design and structure of local area networks, encompassing how devices are physically and logically interconnected within a limited geographic area such as a building or campus.'},
+    {id:'id2', slide:'Slide 7', diff:'Easy', q:'This topology connects all nodes to a single central cable (backbone) through interface connectors. Signals travel in both directions, and data is broadcast to all nodes.',
+     ans:'Bus Topology',
+     exp:'Bus Topology uses a single backbone cable to which all nodes attach. The central cable serves as the bus, and signals travel bidirectionally. All nodes receive the signal, but only the intended recipient (matched by machine code) accepts it. It is suited for small networks.'},
+    {id:'id3', slide:'Slide 8', diff:'Easy', q:'In this topology, each node connects individually to a central hub, router, or switch through dedicated point-to-point connections. The central device acts as a signal repeater.',
+     ans:'Star Topology',
+     exp:'Star Topology requires every node to have its own dedicated cable to the central hub/switch. The central device repeats signals to the appropriate destination port. If one node fails, only that node is affected, making Star Topology fault-tolerant for individual nodes.'},
+    {id:'id4', slide:'Slide 9', diff:'Easy', q:'This topology is described as "a bus topology in a closed loop," where data passes through each intermediate node, which retransmits the signal to keep it strong.',
+     ans:'Ring Topology',
+     exp:'Ring Topology forms a circular chain of nodes where each node connects directly to exactly two adjacent nodes. Data travels around the ring, and each node retransmits the signal. A single cable break can disrupt the entire ring unless a dual-ring redundancy is used.'},
+    {id:'id5', slide:'Slide 11', diff:'Medium', q:'This topology represents point-to-point connections between every single device. The number of physical channels required is calculated using the formula n(n-1)/2.',
+     ans:'Mesh Topology',
+     exp:'Mesh Topology provides maximum redundancy and fault tolerance by linking every node directly to every other node. The n(n-1)/2 formula calculates the minimum number of links needed. For example, 6 devices require 15 links. While very reliable, it is expensive and complex to manage.'},
+    {id:'id6', slide:'Slide 13', diff:'Easy', q:'This network role describes computers that provide shared resources to users — including file, print, web, login, or authentication services.',
+     ans:'Server',
+     exp:'A Server is any computer that provides services to other devices on the network. The term is generic — any computer offering file sharing, printing, web hosting, login validation, or authentication qualifies as a server, regardless of its hardware specifications.'},
+    {id:'id7', slide:'Slide 14', diff:'Medium', q:'In Ethernet naming convention, this letter (seen in standards like 100Base-T and 1000Base-T) indicates the use of twisted-pair copper cabling.',
+     ans:'T',
+     exp:'In Ethernet standard names, "T" stands for Twisted-Pair copper cabling. For example, 10Base-T uses Cat3 UTP, 100Base-TX uses Cat5/5E/6 UTP, and 1000Base-T uses Cat5 UTP. The "T" distinguishes these copper standards from fiber variants that use F, SX, or LX designators.'},
+    {id:'id8', slide:'Slide 15', diff:'Medium', q:'This Ethernet standard (IEEE 802.3u) uses multi-mode optical fiber as its transmission medium and supports cable runs up to 412 meters.',
+     ans:'100Base-FX',
+     exp:'100Base-FX is the fiber-optic variant of Fast Ethernet (IEEE 802.3u), operating at 100 Mbps over multi-mode optical fiber. Its maximum cable distance of 412 meters significantly exceeds the 100-meter limit of its copper counterpart (100Base-TX).'},
+    {id:'id9', slide:'Slide 16', diff:'Hard', q:'This Ethernet standard (802.3.an) achieves 10 Gbps over Category 5e, 6, and 7 UTP cables with a maximum segment length of 100 meters.',
+     ans:'10GBase-T',
+     exp:'10GBase-T (IEEE 802.3.an) is the 10 Gigabit Ethernet standard for copper UTP cabling. It is the highest-speed copper Ethernet standard in the lesson. It requires at minimum Cat5e but performs optimally on Cat6 and Cat7 cabling at the full 100-meter run.'},
+    {id:'id10', slide:'Slide 17', diff:'Easy', q:'This LAN security risk occurs when individuals gain access to an organization\'s networks, systems, applications, data, or devices without permission.',
+     ans:'Unauthorized Access',
+     exp:'Unauthorized Access is the security risk where persons without the appropriate permissions gain entry to protected resources. It can result from stolen credentials, social engineering, brute-force attacks, or exploited vulnerabilities. Countermeasures include ACLs, MFA, and network segmentation.'},
+  ],
+  si: [
+    {id:'si1', slide:'Slide 8', diff:'Medium', q:'A network administrator is setting up a 5-computer office network. The requirement is that if any one computer fails, the remaining computers must continue operating normally. Which topology is MOST appropriate?',
+     opts:['Bus Topology','Ring Topology','Star Topology','Mesh Topology'],
+     ans:2,
+     why:['Incorrect. In Bus Topology, a failure on the backbone cable disrupts the entire network, and even a single node failure can corrupt the bus signal.','Incorrect. Ring Topology is vulnerable to single-node failures — one broken link can disable the entire ring unless a dual-ring is used.','Correct. In Star Topology, each computer connects independently to the central switch. If one computer fails, only that node is affected; all others continue communicating through the switch normally.','Incorrect. While Mesh Topology offers superior fault tolerance, it is impractical and expensive for a small 5-computer office due to the n(n-1)/2 = 10 required cable runs.']},
+    {id:'si2', slide:'Slide 7', diff:'Medium', q:'An IT technician observes that the entire company network stops functioning whenever the main cable in the network is physically damaged. Which topology is this company MOST likely using?',
+     opts:['Star Topology','Bus Topology','Tree Topology','Ring Topology'],
+     ans:1,
+     why:['Incorrect. In Star Topology, the central cable connects to a switch with multiple ports — damage to one cable only takes down that one node, not the whole network.','Correct. Bus Topology uses a single backbone cable shared by all nodes. Damage to this cable creates an open circuit on the bus, which causes the entire network to fail.','Incorrect. Tree Topology is hierarchical — damage to one branch cable typically only affects that branch and its children, not the entire network.','Incorrect. Ring Topology failure from a single break is possible, but the symptom typically matches bus topology, which is the backbone concept highlighted in the slide.']},
+    {id:'si3', slide:'Slide 12', diff:'Easy', q:'A university has a Ring Topology in its Computer Science department and a Bus Topology in its Engineering department. The IT team wants to connect both departments into one unified network. What type of topology will result?',
+     opts:['Mesh Topology','Star Topology','Hybrid Topology','Tree Topology'],
+     ans:2,
+     why:['Incorrect. Mesh Topology would require every node to connect to every other node — this is not the result of simply connecting two existing department networks.','Incorrect. Star Topology would require replacing both existing topologies with a central hub/switch setup, not just interconnecting them.','Correct. Connecting two different topology types (Ring + Bus) creates a Hybrid Topology. The slide uses exactly this type of scenario as the definition example for Hybrid Topology.','Incorrect. Tree Topology would require restructuring both networks into a hierarchical root-node arrangement, not just linking them.']},
+    {id:'si4', slide:'Slide 16', diff:'Medium', q:'A company wants to implement Gigabit Ethernet across their office using existing Category 5 UTP cabling with cable runs up to 100 meters. Which Ethernet standard should they use?',
+     opts:['100Base-TX (IEEE 802.3u)','1000Base-CX (IEEE 802.3z)','1000Base-T (IEEE 802.3ab)','1000Base-SX (IEEE 802.3z)'],
+     ans:2,
+     why:['Incorrect. 100Base-TX only delivers 100 Mbps (Fast Ethernet), not the 1 Gbps Gigabit speed required.','Incorrect. 1000Base-CX uses 150-ohm shielded copper cable (STP) and is limited to only 25 meters — far too short for typical office wiring.','Correct. 1000Base-T (IEEE 802.3ab) is Gigabit Ethernet specifically designed for Category 5 UTP copper cabling at runs up to 100 meters — the perfect match for this scenario.','Incorrect. 1000Base-SX uses multi-mode fiber-optic cable, not the existing copper UTP cabling the company wants to reuse.']},
+    {id:'si5', slide:'Slide 16', diff:'Hard', q:'A data center architect needs a 10 Gbps backbone between servers, with runs under 100 meters over standard copper cabling. Which Ethernet standard is the MOST appropriate choice?',
+     opts:['1000Base-LX (IEEE 802.3z)','1000Base-T (IEEE 802.3ab)','100Base-FX (IEEE 802.3u)','10GBase-T (802.3.an)'],
+     ans:3,
+     why:['Incorrect. 1000Base-LX achieves only 1 Gbps over single-mode fiber, not the 10 Gbps target.','Incorrect. 1000Base-T is Gigabit (1 Gbps) Ethernet over copper — sufficient for desktop use but falls short of the 10 Gbps data center backbone requirement.','Incorrect. 100Base-FX delivers only 100 Mbps over multi-mode fiber — completely inadequate for a 10 Gbps data center backbone.','Correct. 10GBase-T (802.3.an) is the only standard in the lesson that delivers 10 Gbps. It operates over Cat5e/6/7 UTP copper with runs up to 100 meters, making it perfectly suited for data center server backbone connections.']},
+    {id:'si6', slide:'Slide 19', diff:'Medium', q:'A trusted systems administrator begins secretly copying sensitive customer data to an external drive, exploiting their legitimate access credentials. Which LAN security risk category does this scenario represent?',
+     opts:['Unauthorized Access','Malware and Viruses','Insider Threat','Lack of Network Monitoring'],
+     ans:2,
+     why:['Incorrect. Unauthorized Access involves someone without permission gaining entry. This administrator has LEGITIMATE access — the threat comes from misusing it.','Incorrect. Malware involves harmful programs or code. The administrator here is using manual, legitimate system access — no malicious software is involved.','Correct. This is a classic Insider Threat scenario. The risk comes from someone already WITHIN the organization, using their authorized access maliciously — a complex threat as noted in the lesson.','Incorrect. Lack of Network Monitoring describes the absence of visibility tools — not the act of data theft itself, though monitoring could help detect this behavior.']},
+    {id:'si7', slide:'Slide 18', diff:'Easy', q:'A company\'s file servers are suddenly encrypted by an unknown program, and a ransom demand appears on screen demanding cryptocurrency payment. What type of LAN security risk does this represent?',
+     opts:['Unauthorized Access','Malware and Viruses','Insider Threats','Poor Security Hygiene'],
+     ans:1,
+     why:['Incorrect. While unauthorized access may have enabled the initial intrusion, the event described (encryption + ransom demand) is specifically characteristic of malware (ransomware).','Correct. Ransomware is a specific type of Malware — a program created with intent to harm. It encrypts files and demands payment, fitting squarely within the Malware and Viruses security risk category.','Incorrect. Insider Threats involve people within the organization; ransomware typically enters through external vectors like phishing emails or exploited vulnerabilities.','Incorrect. Poor Security Hygiene may have made the system vulnerable to the attack, but the event itself (ransomware execution) is classified as Malware and Viruses.']},
+    {id:'si8', slide:'Slide 20', diff:'Easy', q:'A network audit reveals that all servers use default factory passwords, software patches have not been applied in 8 months, and the firewall is misconfigured. This situation is an example of which LAN security risk?',
+     opts:['Unauthorized Access','Insider Threats','Lack of Network Monitoring','Poor Security Hygiene'],
+     ans:3,
+     why:['Incorrect. Unauthorized Access refers to the act of illegally entering a system. The scenario describes conditions that ENABLE such access, not the breach itself.','Incorrect. Insider Threats involve deliberate misuse by internal personnel. Default passwords and unpatched systems are administrative negligence, not insider sabotage.','Incorrect. Lack of Network Monitoring describes insufficient visibility tools, not the failure to maintain security configurations.','Correct. Poor Security Hygiene encompasses exactly these negligent practices: default passwords, unpatched systems, and misconfigured firewalls — all leading to security incidents, data compromise, and data loss.']},
+    {id:'si9', slide:'Slide 21', diff:'Medium', q:'A large hospital\'s security team struggles to maintain consistent network monitoring because the network layout constantly changes to meet new departmental demands and different floors use incompatible network equipment. Which security risk does this scenario best illustrate?',
+     opts:['Malware and Viruses','Insider Threats','Lack of Network Monitoring','Unauthorized Access'],
+     ans:2,
+     why:['Incorrect. Malware and Viruses involve harmful programs, not the challenge of monitoring a non-uniform network.','Incorrect. Insider Threats involve malicious or negligent internal actors, not the structural difficulty of monitoring a complex network.','Correct. This scenario perfectly matches the definition from the slide: monitoring becomes a challenge due to the lack of uniformity in the network and alternating demand that makes scalability even worse — exactly the hospital\'s situation.','Incorrect. Unauthorized Access is about gaining entry without permission, not about the difficulty of monitoring a heterogeneous network environment.']},
+    {id:'si10', slide:'Slide 16', diff:'Hard', q:'A financial company needs to connect two buildings 3 km apart using Gigabit Ethernet. The connection must not use signal repeaters. Which standard is MOST appropriate?',
+     opts:['1000Base-SX (IEEE 802.3z)','1000Base-CX (IEEE 802.3z)','1000Base-T (IEEE 802.3ab)','1000Base-LX (IEEE 802.3z)'],
+     ans:3,
+     why:['Incorrect. 1000Base-SX uses short-wavelength multi-mode fiber with a maximum reach of about 550 meters — far too short for a 3 km connection without repeaters.','Incorrect. 1000Base-CX uses 150-ohm STP copper cable and is limited to only 25 meters — completely unsuitable for a 3 km building-to-building link.','Incorrect. 1000Base-T uses Category 5 UTP copper with a maximum of 100 meters — a 3 km copper run would require dozens of repeaters.','Correct. 1000Base-LX uses single-mode fiber with a maximum range of approximately 5 km without signal regeneration — easily covering the 3 km inter-building distance in a single cable run.']},
+  ]
+};
+
+// ══════════════════════════════════════════════
+//  STATE
+// ══════════════════════════════════════════════
+let state = {
+  questions: [],    // flat ordered list of question objects (with shuffledOpts)
+  answers: {},      // {id: userAnswer}
+  flags: new Set(),
+  submitted: false,
+  timer: null,
+  totalTime: 20*60,
+  elapsed: 0,
+  streak: 0,
+  maxStreak: 0,
+  dark: false
+};
+
+// ══════════════════════════════════════════════
+//  SHUFFLE
+// ══════════════════════════════════════════════
+function shuffle(arr){
+  let a=[...arr];
+  for(let i=a.length-1;i>0;i--){
+    const j=Math.floor(Math.random()*(i+1));
+    [a[i],a[j]]=[a[j],a[i]];
+  }
+  return a;
+}
+
+function buildQuestions(){
+  const allMC = shuffle(QUESTION_BANK.mc).slice(0,20);
+  const allTF = shuffle(QUESTION_BANK.tf).slice(0,10);
+  const allEN = shuffle(QUESTION_BANK.en).slice(0,3);
+  const allID = shuffle(QUESTION_BANK.id).slice(0,10);
+  const allSI = shuffle(QUESTION_BANK.si).slice(0,10);
+
+  function prepMC(q){
+    const origOpts = q.opts;
+    const origWhy  = q.why;
+    const correctText = origOpts[q.ans];
+    const indices = origOpts.map((_,i)=>i);
+    const shuffled = shuffle(indices);
+    const shuffledOpts = shuffled.map(i=>origOpts[i]);
+    const shuffledWhy  = shuffled.map(i=>origWhy[i]);
+    const newAns = shuffledOpts.indexOf(correctText);
+    return {...q, shuffledOpts, shuffledWhy, origWhy, newAns};
+  }
+
+  state.questions = [
+    ...allMC.map(prepMC),
+    ...allTF,
+    ...allEN,
+    ...allID,
+    ...allSI.map(prepMC)
+  ];
+}
+
+// ══════════════════════════════════════════════
+//  RENDER
+// ══════════════════════════════════════════════
+function renderExam(){
+  buildQuestions();
+  state.answers = {};
+  state.flags = new Set();
+  state.submitted = false;
+
+  const body = document.getElementById('examBody');
+  body.innerHTML = '';
+
+  const sections = [
+    {key:'mc', label:'Section 1: Multiple Choice', qs: state.questions.filter(q=>q.id.startsWith('mc'))},
+    {key:'tf', label:'Section 2: True or False',  qs: state.questions.filter(q=>q.id.startsWith('tf'))},
+    {key:'en', label:'Section 3: Enumeration',    qs: state.questions.filter(q=>q.id.startsWith('en'))},
+    {key:'id', label:'Section 4: Identification', qs: state.questions.filter(q=>q.id.startsWith('id'))},
+    {key:'si', label:'Section 5: Situational',    qs: state.questions.filter(q=>q.id.startsWith('si'))},
+  ];
+
+  let globalNum = 1;
+  sections.forEach(sec=>{
+    const secDiv = document.createElement('div');
+    const lbl = document.createElement('div');
+    lbl.className='section-label';
+    lbl.textContent=sec.label;
+    secDiv.appendChild(lbl);
+    sec.qs.forEach(q=>{
+      secDiv.appendChild(buildCard(q, globalNum++));
+    });
+    body.appendChild(secDiv);
+  });
+
+  updateNav();
+  updateAnsweredCount();
+}
+
+function buildCard(q, num){
+  const card = document.createElement('div');
+  card.className='qcard';
+  card.id='card-'+q.id;
+
+  const top = document.createElement('div');
+  top.className='qcard-top';
+  const qnum = document.createElement('div');
+  qnum.className='qnum';
+  qnum.textContent=`Question ${num}`;
+  const tags = document.createElement('div');
+  tags.className='qtags';
+  tags.innerHTML=`<span class="tag tag-slide">📌 ${q.slide}</span><span class="tag tag-${q.diff.toLowerCase()}">${q.diff}</span>`;
+  const flagBtn = document.createElement('button');
+  flagBtn.className='flag-btn';
+  flagBtn.id='flag-'+q.id;
+  flagBtn.textContent='🚩';
+  flagBtn.title='Flag this question';
+  flagBtn.onclick=()=>toggleFlag(q.id);
+  top.appendChild(qnum); top.appendChild(tags); top.appendChild(flagBtn);
+  card.appendChild(top);
+
+  const qtext = document.createElement('div');
+  qtext.className='qtext';
+  qtext.textContent=q.q;
+  card.appendChild(qtext);
+
+  // Build answer area
+  if(q.id.startsWith('mc') || q.id.startsWith('si')){
+    const optsDiv = document.createElement('div');
+    optsDiv.className='options';
+    const letters=['A','B','C','D'];
+    q.shuffledOpts.forEach((opt,i)=>{
+      const lbl = document.createElement('label');
+      lbl.className='opt-label';
+      lbl.id=`opt-${q.id}-${i}`;
+      lbl.innerHTML=`<div class="radio-circle"></div><span class="opt-letter">${letters[i]}</span><span class="opt-text">${opt}</span>`;
+      lbl.onclick=()=>{ if(!state.submitted) selectOption(q.id, i); };
+      optsDiv.appendChild(lbl);
+    });
+    card.appendChild(optsDiv);
+  } else if(q.id.startsWith('tf')){
+    const tfDiv = document.createElement('div');
+    tfDiv.className='tf-options';
+    ['True','False'].forEach((v,i)=>{
+      const btn = document.createElement('button');
+      btn.className='tf-btn';
+      btn.id=`tf-${q.id}-${i}`;
+      btn.textContent=v;
+      btn.onclick=()=>{ if(!state.submitted) selectTF(q.id, v==='True'); };
+      tfDiv.appendChild(btn);
+    });
+    card.appendChild(tfDiv);
+  } else if(q.id.startsWith('en')){
+    const count = q.ans.length <= q.minCount ? q.minCount : q.minCount;
+    for(let i=0;i<count;i++){
+      const item = document.createElement('div');
+      item.className='enum-item';
+      item.innerHTML=`<div class="enum-lbl">${i+1}.</div><textarea class="text-answer" id="en-${q.id}-${i}" rows="1" placeholder="Enter answer ${i+1}..." oninput="updateEnumAnswer('${q.id}')"></textarea>`;
+      card.appendChild(item);
+    }
+  } else if(q.id.startsWith('id')){
+    const ta = document.createElement('textarea');
+    ta.className='text-answer';
+    ta.id='id-'+q.id;
+    ta.rows=2;
+    ta.placeholder='Type your answer here...';
+    ta.oninput=()=>updateTextAnswer(q.id);
+    card.appendChild(ta);
+  }
+
+  const expBox = document.createElement('div');
+  expBox.className='explanation-box';
+  expBox.id='exp-'+q.id;
+  card.appendChild(expBox);
+
+  return card;
+}
+
+// ══════════════════════════════════════════════
+//  ANSWER HANDLERS
+// ══════════════════════════════════════════════
+function selectOption(qid, idx){
+  state.answers[qid] = idx;
+  const q = state.questions.find(x=>x.id===qid);
+  const opts = document.querySelectorAll(`[id^="opt-${qid}-"]`);
+  opts.forEach((o,i)=>{ o.classList.toggle('selected', i===idx); });
+  updateCard(qid);
+  updateAnsweredCount();
+  updateNav();
+}
+
+function selectTF(qid, val){
+  state.answers[qid] = val;
+  ['True','False'].forEach((v,i)=>{
+    const btn = document.getElementById(`tf-${qid}-${i}`);
+    if(btn) btn.classList.toggle('selected', (v==='True')===val);
+  });
+  updateCard(qid);
+  updateAnsweredCount();
+  updateNav();
+}
+
+function updateEnumAnswer(qid){
+  const q = state.questions.find(x=>x.id===qid);
+  const vals=[];
+  for(let i=0;i<q.minCount;i++){
+    const el=document.getElementById(`en-${qid}-${i}`);
+    if(el) vals.push(el.value.trim());
+  }
+  state.answers[qid]=vals;
+  updateCard(qid);
+  updateAnsweredCount();
+  updateNav();
+}
+
+function updateTextAnswer(qid){
+  const el=document.getElementById('id-'+qid);
+  state.answers[qid]=(el?el.value.trim():'');
+  updateCard(qid);
+  updateAnsweredCount();
+  updateNav();
+}
+
+function updateCard(qid){
+  const card=document.getElementById('card-'+qid);
+  if(!card) return;
+  const hasAnswer = hasAnswered(qid);
+  card.classList.toggle('answered', hasAnswer && !state.submitted);
+}
+
+function hasAnswered(qid){
+  const a=state.answers[qid];
+  if(a===undefined||a===null) return false;
+  if(typeof a==='string') return a.trim()!=='';
+  if(Array.isArray(a)) return a.some(x=>x.trim()!=='');
+  return true;
+}
+
+// ══════════════════════════════════════════════
+//  FLAG
+// ══════════════════════════════════════════════
+function toggleFlag(qid){
+  if(state.flags.has(qid)) state.flags.delete(qid);
+  else state.flags.add(qid);
+  const btn=document.getElementById('flag-'+qid);
+  const card=document.getElementById('card-'+qid);
+  if(btn) btn.classList.toggle('active',state.flags.has(qid));
+  if(card) card.classList.toggle('flagged',state.flags.has(qid));
+  updateNav();
+}
+
+// ══════════════════════════════════════════════
+//  SUBMIT
+// ══════════════════════════════════════════════
+function openModal(){
+  const unanswered = state.questions.filter(q=>!hasAnswered(q.id)).length;
+  const t = document.getElementById('modalTitle');
+  const b = document.getElementById('modalBody');
+  if(unanswered>0){
+    t.textContent='⚠️ Unanswered Questions';
+    b.textContent=`You have ${unanswered} unanswered question${unanswered>1?'s':''}. Are you sure you want to submit?`;
+  } else {
+    t.textContent='📋 Submit Exam';
+    b.textContent='All questions answered! Are you sure you want to submit your exam?';
+  }
+  document.getElementById('modalOverlay').classList.add('show');
+}
+
+function closeModal(){
+  document.getElementById('modalOverlay').classList.remove('show');
+}
+
+function doSubmit(){
+  closeModal();
+  submitExam();
+}
+
+function submitExam(){
+  if(state.submitted) return;
+  state.submitted=true;
+  clearInterval(state.timer);
+  document.getElementById('submitBtn').style.display='none';
+  document.getElementById('retakeBtn').style.display='inline-block';
+
+  let correct=0, total=state.questions.length;
+  let streak=0, maxStreak=0;
+  const sectionScores={mc:{c:0,t:0},tf:{c:0,t:0},en:{c:0,t:0},id:{c:0,t:0},si:{c:0,t:0}};
+
+  state.questions.forEach(q=>{
+    const sec=q.id.slice(0,2);
+    sectionScores[sec].t++;
+    let isCorrect=false;
+
+    if(q.id.startsWith('mc')||q.id.startsWith('si')){
+      isCorrect=(state.answers[q.id]===q.newAns);
+    } else if(q.id.startsWith('tf')){
+      isCorrect=(state.answers[q.id]===q.ans);
+    } else if(q.id.startsWith('en')){
+      const userVals=(state.answers[q.id]||[]).map(v=>v.toLowerCase().trim());
+      const correct_ans=q.ans.map(a=>a.toLowerCase());
+      const matches=userVals.filter(v=>correct_ans.some(a=>v.includes(a)||a.includes(v))).length;
+      isCorrect=(matches>=q.minCount);
+    } else if(q.id.startsWith('id')){
+      const userVal=(state.answers[q.id]||'').toLowerCase().trim();
+      const correctVal=q.ans.toLowerCase();
+      isCorrect=(userVal.includes(correctVal)||correctVal.includes(userVal));
+    }
+
+    if(isCorrect){ correct++; sectionScores[sec].c++; streak++; maxStreak=Math.max(maxStreak,streak); }
+    else streak=0;
+
+    showResult(q, isCorrect);
+  });
+
+  state.maxStreak=maxStreak;
+  const pct=Math.round((correct/total)*100);
+  const pass=(pct>=75);
+
+  // Banner
+  const banner=document.getElementById('resultBanner');
+  banner.style.display='block';
+  banner.classList.add(pass?'pass':'fail');
+  document.getElementById('resultScore').textContent=`${correct}/${total}`;
+  document.getElementById('resultLabel').textContent=`${pct}%`;
+  document.getElementById('resultPass').innerHTML=pass?'<div class="result-pass">✅ PASSED</div>':'<div class="result-fail">❌ FAILED — Score below 75%</div>';
+  document.getElementById('resultStreak').textContent=`🔥 Longest Streak: ${maxStreak} consecutive correct answers`;
+
+  const pillArea=document.getElementById('sectionPills');
+  const secInfo=[
+    {k:'mc',lbl:'Multiple Choice',cls:'pill-mc'},
+    {k:'tf',lbl:'True or False',cls:'pill-tf'},
+    {k:'en',lbl:'Enumeration',cls:'pill-en'},
+    {k:'id',lbl:'Identification',cls:'pill-id'},
+    {k:'si',lbl:'Situational',cls:'pill-si'},
+  ];
+  pillArea.innerHTML=secInfo.map(s=>`<span class="sec-pill ${s.cls}">${s.lbl}: ${sectionScores[s.k].c}/${sectionScores[s.k].t}</span>`).join('');
+
+  // Streak badge
+  const sb=document.getElementById('streakBadge');
+  sb.style.display='flex';
+  sb.textContent=`🔥 ${maxStreak}`;
+
+  // Chart
+  showChart(sectionScores, secInfo);
+  updateNav();
+  banner.scrollIntoView({behavior:'smooth'});
+}
+
+function showResult(q, isCorrect){
+  const card=document.getElementById('card-'+q.id);
+  if(!card) return;
+  card.classList.remove('answered');
+  card.classList.toggle('correct-card', isCorrect);
+  card.classList.toggle('wrong-card', !isCorrect);
+
+  if(q.id.startsWith('mc')||q.id.startsWith('si')){
+    const letters=['A','B','C','D'];
+    q.shuffledOpts.forEach((opt,i)=>{
+      const lbl=document.getElementById(`opt-${q.id}-${i}`);
+      if(!lbl) return;
+      lbl.onclick=null;
+      if(i===q.newAns) lbl.classList.add(state.answers[q.id]===i?'correct-opt':'missed-opt');
+      else if(state.answers[q.id]===i && i!==q.newAns) lbl.classList.add('wrong-opt');
+      lbl.classList.remove('selected');
+    });
+    const expBox=document.getElementById('exp-'+q.id);
+    if(expBox){
+      const correctText=q.shuffledOpts[q.newAns];
+      let html=`<div class="exp-correct">✅ Correct Answer: ${letters[q.newAns]}. ${correctText}</div>`;
+      html+=`<div class="exp-section"><div class="exp-section-title">Option Explanations (Original Order)</div>`;
+      // Use origWhy in original authored order
+      q.origWhy.forEach((w,i)=>{
+        const isC = q.opts[i]===correctText;
+        html+=`<div class="exp-item ${isC?'exp-right':'exp-wrong'}"><strong>${q.opts[i]}:</strong> ${w}</div>`;
+      });
+      html+='</div>';
+      expBox.innerHTML=html;
+      expBox.classList.add('show');
+    }
+  } else if(q.id.startsWith('tf')){
+    const userAns=state.answers[q.id];
+    ['True','False'].forEach((v,i)=>{
+      const btn=document.getElementById(`tf-${q.id}-${i}`);
+      if(!btn) return;
+      btn.onclick=null;
+      const btnVal=(v==='True');
+      if(btnVal===q.ans) btn.classList.add(userAns===btnVal?'correct-tf':'missed-tf');
+      else if(userAns===btnVal && btnVal!==q.ans) btn.classList.add('wrong-tf');
+      btn.classList.remove('selected');
+    });
+    const expBox=document.getElementById('exp-'+q.id);
+    if(expBox){
+      expBox.innerHTML=`<div class="exp-correct">✅ Correct Answer: ${q.ans?'True':'False'}</div><div class="exp-section"><div class="exp-item ${isCorrect?'exp-right':'exp-wrong'}">${q.why}</div></div>`;
+      expBox.classList.add('show');
+    }
+  } else if(q.id.startsWith('en')){
+    for(let i=0;i<q.minCount;i++){
+      const el=document.getElementById(`en-${q.id}-${i}`);
+      if(el) el.disabled=true;
+    }
+    const expBox=document.getElementById('exp-'+q.id);
+    if(expBox){
+      expBox.innerHTML=`<div class="exp-correct">✅ Expected Answers: ${q.ans.join(', ')}</div><div class="exp-section"><div class="exp-item exp-right">${q.exp}</div></div>`;
+      expBox.classList.add('show');
+    }
+  } else if(q.id.startsWith('id')){
+    const el=document.getElementById('id-'+q.id);
+    if(el) el.disabled=true;
+    const expBox=document.getElementById('exp-'+q.id);
+    if(expBox){
+      expBox.innerHTML=`<div class="exp-correct">✅ Correct Answer: ${q.ans}</div><div class="exp-section"><div class="exp-item ${isCorrect?'exp-right':'exp-wrong'}">${q.exp}</div></div>`;
+      expBox.classList.add('show');
+    }
+  }
+}
+
+// ══════════════════════════════════════════════
+//  CHART
+// ══════════════════════════════════════════════
+function showChart(scores, secInfo){
+  const colors={mc:'#3b82f6',tf:'#8b5cf6',en:'#f59e0b',id:'#06b6d4',si:'#10b981'};
+  const area=document.getElementById('chartArea');
+  area.style.display='block';
+  const bars=document.getElementById('chartBars');
+  bars.innerHTML='';
+  secInfo.forEach(s=>{
+    const pct=s.k in scores ? Math.round((scores[s.k].c/scores[s.k].t)*100) : 0;
+    const row=document.createElement('div');
+    row.className='chart-row';
+    row.innerHTML=`<div class="chart-lbl">${s.lbl}</div><div class="chart-bar-wrap"><div class="chart-bar" id="bar-${s.k}" style="width:0%;background:${colors[s.k]}"></div></div><div class="chart-pct">${pct}%</div>`;
+    bars.appendChild(row);
+  });
+  requestAnimationFrame(()=>{
+    secInfo.forEach(s=>{
+      const pct=s.k in scores ? Math.round((scores[s.k].c/scores[s.k].t)*100) : 0;
+      const bar=document.getElementById('bar-'+s.k);
+      if(bar) setTimeout(()=>bar.style.width=pct+'%', 100);
+    });
+  });
+}
+
+// ══════════════════════════════════════════════
+//  TIMER
+// ══════════════════════════════════════════════
+function startTimer(){
+  state.elapsed=0;
+  const total=state.totalTime;
+  const td=document.getElementById('timerDisplay');
+  const pb=document.getElementById('progressBar');
+  state.timer=setInterval(()=>{
+    state.elapsed++;
+    const remaining=total-state.elapsed;
+    if(remaining<=0){ clearInterval(state.timer); doSubmit(); return; }
+    const m=Math.floor(remaining/60), s=remaining%60;
+    td.textContent=`${m}:${s.toString().padStart(2,'0')}`;
+    const pct=(remaining/total)*100;
+    pb.style.width=pct+'%';
+    const is25=(pct<=25), is5=(remaining<=300);
+    td.classList.toggle('warn', is25 && !is5);
+    td.classList.toggle('danger', is5);
+    pb.classList.toggle('warn', is25 && !is5);
+    pb.classList.toggle('danger', is5);
+  },1000);
+}
+
+// ══════════════════════════════════════════════
+//  NAVIGATOR
+// ══════════════════════════════════════════════
+function updateNav(){
+  const sections=[
+    {k:'mc',lbl:'Multiple Choice'},
+    {k:'tf',lbl:'True or False'},
+    {k:'en',lbl:'Enumeration'},
+    {k:'id',lbl:'Identification'},
+    {k:'si',lbl:'Situational'},
+  ];
+  const container=document.getElementById('navSections');
+  container.innerHTML='';
+  let globalNum=1;
+  sections.forEach(sec=>{
+    const qs=state.questions.filter(q=>q.id.startsWith(sec.k));
+    if(!qs.length) return;
+    const div=document.createElement('div');
+    div.className='nav-section';
+    div.innerHTML=`<div class="nav-sec-lbl">${sec.lbl}</div>`;
+    const grid=document.createElement('div');
+    grid.className='nav-grid';
+    qs.forEach(q=>{
+      const box=document.createElement('div');
+      box.className='nav-box';
+      box.textContent=globalNum++;
+      if(state.submitted){
+        let isCorrect=false;
+        if(q.id.startsWith('mc')||q.id.startsWith('si')) isCorrect=state.answers[q.id]===q.newAns;
+        else if(q.id.startsWith('tf')) isCorrect=state.answers[q.id]===q.ans;
+        else if(q.id.startsWith('en')){
+          const uv=(state.answers[q.id]||[]).map(v=>v.toLowerCase().trim());
+          const ca=q.ans.map(a=>a.toLowerCase());
+          isCorrect=uv.filter(v=>ca.some(a=>v.includes(a)||a.includes(v))).length>=q.minCount;
+        } else if(q.id.startsWith('id')){
+          const uv=(state.answers[q.id]||'').toLowerCase().trim();
+          const cv=q.ans.toLowerCase();
+          isCorrect=uv.includes(cv)||cv.includes(uv);
+        }
+        if(!hasAnswered(q.id)) box.classList.add('nav-skipped');
+        else box.classList.add(isCorrect?'nav-correct':'nav-wrong');
+      } else {
+        if(state.flags.has(q.id)) box.classList.add('nav-flagged');
+        else if(hasAnswered(q.id)) box.classList.add('nav-answered');
+      }
+      box.onclick=()=>{ scrollToQ(q.id); closeNav(); };
+      grid.appendChild(box);
+    });
+    div.appendChild(grid);
+    container.appendChild(div);
+  });
+}
+
+function scrollToQ(qid){
+  const el=document.getElementById('card-'+qid);
+  if(el) el.scrollIntoView({behavior:'smooth', block:'center'});
+}
+
+function toggleNav(){
+  document.getElementById('navPanel').classList.toggle('open');
+  document.getElementById('navOverlay').style.display=document.getElementById('navPanel').classList.contains('open')?'block':'none';
+}
+
+function closeNav(){
+  document.getElementById('navPanel').classList.remove('open');
+  document.getElementById('navOverlay').style.display='none';
+}
+
+function updateAnsweredCount(){
+  const answered=state.questions.filter(q=>hasAnswered(q.id)).length;
+  document.getElementById('answeredCount').textContent=`${answered} / ${state.questions.length} answered`;
+}
+
+// ══════════════════════════════════════════════
+//  DARK MODE
+// ══════════════════════════════════════════════
+function toggleDark(){
+  state.dark=!state.dark;
+  document.documentElement.setAttribute('data-theme', state.dark?'dark':'');
+  document.getElementById('darkBtn').textContent=state.dark?'☀️':'🌙';
+}
+
+// ══════════════════════════════════════════════
+//  RETAKE
+// ══════════════════════════════════════════════
+function retake(){
+  clearInterval(state.timer);
+  state.elapsed=0;
+  state.submitted=false;
+  state.maxStreak=0;
+  document.getElementById('resultBanner').style.display='none';
+  document.getElementById('resultBanner').classList.remove('pass','fail');
+  document.getElementById('chartArea').style.display='none';
+  document.getElementById('submitBtn').style.display='inline-block';
+  document.getElementById('retakeBtn').style.display='none';
+  document.getElementById('streakBadge').style.display='none';
+  const td=document.getElementById('timerDisplay');
+  td.textContent='20:00';
+  td.className='';
+  document.getElementById('progressBar').style.width='100%';
+  document.getElementById('progressBar').className='';
+  renderExam();
+  startTimer();
+  window.scrollTo({top:0,behavior:'smooth'});
+}
+
+// ══════════════════════════════════════════════
+//  INIT
+// ══════════════════════════════════════════════
+renderExam();
+startTimer();
+</script>
+</body>
+</html>
